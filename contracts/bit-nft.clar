@@ -36,6 +36,7 @@
 (define-constant err-bid-too-low (err u110))
 (define-constant err-no-auction (err u111))
 (define-constant err-invalid-duration (err u112))
+(define-constant err-invalid-increment (err u113))
 
 ;; Data Variables
 (define-data-var platform-fee uint u25) ;; 2.5% fee
@@ -147,6 +148,7 @@
         (asserts! (is-valid-nft-contract nft-contract) err-invalid-nft-contract)
         (asserts! (> token-id u0) err-invalid-token-id)
         (asserts! (> start-price u0) err-invalid-price)
+        (asserts! (> min-increment u0) err-invalid-increment)
         (asserts! (> duration u0) err-invalid-duration)
         (asserts! (is-eq tx-sender owner) err-not-owner)
         (asserts! listing-enabled err-listing-disabled)
@@ -183,6 +185,7 @@
         ;; Check auction has ended
         (asserts! (>= block-height (get end-block auction)) err-auction-not-ended)
         (asserts! (is-valid-nft-contract nft-contract) err-invalid-nft-contract)
+        (asserts! (> token-id u0) err-invalid-token-id)
         
         ;; Process auction result
         (match highest-bidder-opt

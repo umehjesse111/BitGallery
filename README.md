@@ -1,89 +1,85 @@
-# BitGallery
+# BitGallery - Decentralized NFT Marketplace
 
-BitGallery is a decentralized NFT marketplace built on the Stacks blockchain, enabling seamless NFT trading with Bitcoin integration.
+BitGallery is a comprehensive NFT marketplace smart contract built on the Stacks blockchain, enabling secure and flexible NFT trading with advanced auction and listing capabilities.
 
 ## Features
 
-- Mint and trade NFTs using Stacks blockchain
-- Bitcoin-based payments for NFTs
-- Royalty system for creators
-- Auction functionality
-- Social features including creator following and artwork commenting
-- Secure smart contract implementation
+- Fixed Price Listings
+- Dynamic Auction Mechanism
+- Platform Fee Management
+- SIP-009 NFT Standard Compatibility
+- Secure NFT Transfer and Trading
+- Flexible Auction Configuration
 
-## Smart Contract Overview
+## Smart Contract Capabilities
 
-The BitGallery smart contract provides core functionality for:
+### Listing Functions
+- `list-nft`: List an NFT for a fixed price
+- `buy-nft`: Purchase an NFT at the listed price
+- `cancel-listing`: Remove an NFT from sale
 
-- Listing NFTs for sale
-- Purchasing NFTs
-- Managing listings
-- Handling platform fees
-- Implementing security measures
+### Auction Functions
+- `start-auction`: Create a new auction with configurable parameters
+  - Custom start price
+  - Minimum bid increment
+  - Auction duration
+- `end-auction`: Conclude an auction, transferring NFT and funds
 
-### Key Functions
+### Admin Functions
+- `set-platform-fee`: Adjust marketplace commission (max 10%)
 
-1. `list-nft`: Allow users to list their NFTs for sale
-2. `buy-nft`: Enable NFT purchases with automatic fee handling
-3. `cancel-listing`: Permit sellers to remove their listings
-4. `get-listing`: Retrieve listing information
-5. `get-platform-fee`: Check current platform fee
-6. `set-platform-fee`: Admin function to update platform fee
+## Marketplace Parameters
+
+- **Platform Fee**: Configurable, default 2.5% of sale price
+- **Token Support**: Compatible with SIP-009 NFT contracts
+- **Minimum Token ID**: Greater than 0
+- **Price Validation**: Prevents zero-value listings/bids
+
+## Error Handling
+
+The contract includes comprehensive error management with specific error codes:
+- Ownership verification
+- Listing state checks
+- Price validation
+- Auction mechanism constraints
 
 ## Technical Requirements
 
-- Clarity CLI
-- Stacks blockchain access
-- Node.js environment
-- Web3 wallet (Hiro or similar)
+- Stacks Blockchain
+- Clarity Smart Contract Language
+- SIP-009 Compatible NFT Contracts
 
-## Installation
+## Security Measures
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/bit-gallery.git
-cd bit-gallery
+- Owner-only administrative functions
+- Pre-transaction validation
+- Secure asset transfers
+- Explicit error reporting
+
+## Auction Mechanics
+
+1. NFT owner starts an auction
+2. Bidders place incrementing bids
+3. Auction concludes automatically
+4. Highest bidder receives NFT
+5. Seller receives funds minus platform fee
+
+## Usage Example
+
+```clarity
+;; List an NFT
+(list-nft nft-contract token-id price)
+
+;; Start an auction
+(start-auction 
+    nft-contract 
+    token-id 
+    start-price 
+    min-increment 
+    auction-duration
+)
 ```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Configure environment:
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
-
-## Development
-
-1. Start local Stacks blockchain:
-```bash
-stacks-node start
-```
-
-2. Deploy contract:
-```bash
-clarinet contract deploy
-```
-
-3. Run tests:
-```bash
-clarinet test
-```
-
-## Security
-
-- Contract implements ownership checks
-- Transfer validations
-- Fee management
-- Listing state management
 
 ## Contributing
 
-1. Fork the repository
-2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
+Contributions welcome! Please review contract implementation and submit pull requests with improvements or bug fixes.
