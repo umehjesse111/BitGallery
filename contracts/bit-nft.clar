@@ -1,7 +1,22 @@
 ;; BitGallery - NFT Marketplace Smart Contract
 ;; Allows users to mint, list, buy, and trade NFTs using Bitcoin
 
-(use-trait nft-trait .sip-009.nft-trait)
+;; Define SIP-009 NFT Trait
+(define-trait nft-trait
+    (
+        ;; Last token ID, limited to uint range
+        (get-last-token-id () (response uint uint))
+        
+        ;; URI for metadata associated with the token
+        (get-token-uri (uint) (response (optional (string-ascii 256)) uint))
+        
+        ;; Owner of a given token identifier
+        (get-owner (uint) (response (optional principal) uint))
+        
+        ;; Transfer from the sender to a new principal
+        (transfer (uint principal principal) (response bool uint))
+    )
+)
 
 ;; Constants
 (define-constant contract-owner tx-sender)
@@ -10,11 +25,12 @@
 (define-constant err-not-listed (err u101))
 (define-constant err-wrong-price (err u102))
 (define-constant err-listing-disabled (err u103))
+(define-constant err-owner-not-found (err u104))
 
 ;; Data Variables
 (define-data-var platform-fee uint u25) ;; 2.5% fee
 (define-map listings
-    { nft-id: uint, token-id: uint }
+    { nft-id: principal, token-id: uint }  ;; Changed nft-id type to principal
     { price: uint, seller: principal }
 )
 
@@ -22,7 +38,8 @@
 (define-public (list-nft (nft-contract <nft-trait>) (token-id uint) (price uint))
     (let
         (
-            (owner (unwrap! (contract-call? nft-contract get-owner token-id) err-not-owner))
+            (owner-response (try! (contract-call? nft-contract get-owner token-id)))
+            (owner (unwrap! owner-response err-owner-not-found))
         )
         (asserts! (is-eq tx-sender owner) err-not-owner)
         (asserts! listing-enabled err-listing-disabled)
